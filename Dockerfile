@@ -6,7 +6,10 @@
 FROM mariadb:lts-noble AS mariadb
 
 #
+
 # Built-in docs build step
+COPY ./util/set_memory_limits.sh /usr/local/bin/set_memory_limits.sh
+RUN chmod +x /usr/local/bin/set_memory_limits.sh
 #
 FROM ghcr.io/azuracast/azuracast.com:builtin@sha256:f7c41278613d113375ca285ba85f770c6f1daf2a08d8a3da42540389b15a2647 AS docs
 
@@ -31,9 +34,10 @@ COPY --from=php-extension-installer /usr/bin/install-php-extensions /usr/local/b
 COPY --from=mariadb /usr/local/bin/healthcheck.sh /usr/local/bin/db_healthcheck.sh
 COPY --from=mariadb /usr/local/bin/docker-entrypoint.sh /usr/local/bin/db_entrypoint.sh
 
-# Add Icecast
-COPY --from=icecast /usr/local/bin/icecast /usr/local/bin/icecast
-COPY --from=icecast /usr/local/share/icecast /usr/local/share/icecast
+
+# Entrypoint runs memory limits script before main init
+ENTRYPOINT ["bash", "-c", ". /usr/local/bin/set_memory_limits.sh && tini -- /usr/local/bin/my_init"]
+CMD ["--no-main-command"]
 
 #
 # Final build image
@@ -52,10 +56,13 @@ COPY --link --from=dependencies / /
 RUN --mount=type=bind,source=./util/docker/common,target=/bd_build,rw \
     bash /bd_build/prepare.sh && \
     bash /bd_build/add_user.sh && \
+# Copy memory limits script
+COPY ./util/set_memory_limits.sh /usr/local/bin/set_memory_limits.sh
+RUN chmod +x /usr/local/bin/set_memory_limits.sh
     bash /bd_build/cleanup.sh
 
-# Build each set of dependencies in their own step for cacheability.
-RUN --mount=type=bind,source=./util/docker/common,target=/bd_build,rw \
+ENTRYPOINT ["bash", "-c", ". /usr/local/bin/set_memory_limits.sh && tini -- /usr/local/bin/my_init"]
+CMD ["--no-main-command"]
     --mount=type=bind,source=./util/docker/supervisor,target=/bd_build/supervisor,rw \
     bash /bd_build/supervisor/setup.sh && \
     bash /bd_build/cleanup.sh

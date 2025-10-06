@@ -20,7 +20,8 @@ final class AzuraCastCentral
     use EnvironmentAwareTrait;
     use SettingsAwareTrait;
 
-    private const string BASE_URL = 'https://central.azuracast.com';
+    // Update source changed to user's GitHub repository
+    private const string BASE_URL = 'https://github.com/treasureakintoye/raidion';
 
     public function __construct(
         private readonly Version $version,

@@ -15,6 +15,7 @@ import {useTranslate} from "~/vendor/gettext";
 import ChartAltValues from "~/components/Common/Charts/ChartAltValues.vue";
 import useChart, {ChartProps} from "~/functions/useChart";
 import {useLuxon} from "~/vendor/luxon";
+import {modernChartTheme, getChartGradient} from "~/functions/modernChartTheme";
 
 interface TimeSeriesChartProps extends ChartProps<'line'> {
     tz?: string,
@@ -41,7 +42,13 @@ useChart<'line'>(
             datasets: {
                 line: {
                     spanGaps: true,
-                    showLine: true
+                    showLine: true,
+                    ...modernChartTheme.light,
+                    fill: true,
+                    backgroundColor: (context) => {
+                        const ctx = context.chart.ctx;
+                        return getChartGradient(ctx);
+                    }
                 }
             },
             plugins: {

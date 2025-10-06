@@ -1,7 +1,23 @@
 :root,
 [data-bs-theme="light"] {
-  --public-page-bg: url('/static/img/hexbg.webp');
+  // Modern color scheme
+  --primary: #{$primary};
+  --primary-light: #{$purple-light};
+  --primary-dark: #{$purple-dark};
+  
+  // Surface colors
+  --surface-0: #{$gray-50};
+  --surface-1: #{$gray-100};
+  --surface-2: #{$gray-200};
+  
+  // Background
+  --public-page-bg: linear-gradient(135deg, var(--surface-0) 0%, var(--surface-1) 100%);
   --scrollbar-color: #{$gray-400};
+  
+  // Glassmorphism
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 }
 
 @include color-mode(dark, true) {
@@ -14,8 +30,25 @@
     color-scheme: light;
   }
 
-  --public-page-bg: url('/static/img/hexbg_dark.webp');
+  // Modern dark theme colors
+  --primary: #{lighten($primary, 5%)};
+  --primary-light: #{lighten($purple-light, 5%)};
+  --primary-dark: #{$purple-dark};
+  
+  // Dark surface colors
+  --surface-0: #{$body-bg-dark};
+  --surface-1: #{lighten($body-bg-dark, 4%)};
+  --surface-2: #{lighten($body-bg-dark, 8%)};
+  
+  // Dark theme background
+  --public-page-bg: linear-gradient(135deg, var(--surface-0) 0%, var(--surface-1) 100%);
   --scrollbar-color: #{$gray-800};
+  
+  // Dark glassmorphism
+  --glass-bg: rgba(0, 0, 0, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.05);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  
   --bs-info-bg-subtle: #bbdefb;
   --bs-info-text-emphasis: #2C363D;
 
